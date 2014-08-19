@@ -1,23 +1,38 @@
 require 'sinatra'
 require 'pp'
+require 'json'
 
-bucket = Array.new
+buckets = Hash.new
+buckets['z'] = Array.new
 
 get '/' do
     'Hello Brandon'
 end
 
-get '/whatnum/:num' do
-    "that number is #{params[:num]}"
+post '/startgame/:bucketid' do |b|
+    puts "creating new bucket #{b}"
+    buckets[b] = Array.new
 end
 
-post '/submit' do
-    puts "Submit was hit"
+delete '/endgame/:bucketid' do |b|
+    buckets[b] = Array.new
+end
+
+post '/submit/:bucketid' do
+    puts "Submit was hit for bucket #{params[:bucketid]}"
+    bucket = buckets[params[:bucketid]]
     params.each do |key, val|
-        puts "#{key}: #{val}"
-        bucket.push(val)
+        puts "#{key}:#{val}"
+        if key.start_with?("phrase")
+            bucket.push(val)
+        end
     end
-    puts "bucket = "
+    puts "bucket[#{params[:bucketid]}] = "
     pp bucket
     puts "end"
+end
+
+get 'buckets/:bucketid/' do
+    puts "Getting bucket #{params[:bucketid]}"
+    buckets[params[:bucketid]].to_json
 end
