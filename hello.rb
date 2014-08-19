@@ -1,11 +1,23 @@
 require 'sinatra'
+require 'pp'
+
+bucket = Array.new
 
 get '/' do
-    '<p style="color:red">Hello Brandon</p>'
+    'Hello Brandon'
 end
 
-get '/add2/:num' do
+get '/whatnum/:num' do
     "that number is #{params[:num]}"
 end
 
-
+post '/submit' do
+    puts "Submit was hit"
+    params.each do |key, val|
+        puts "#{key}: #{val}"
+        bucket.push(val)
+    end
+    puts "bucket = "
+    pp bucket
+    puts "end"
+end
